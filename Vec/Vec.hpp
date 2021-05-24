@@ -1,15 +1,7 @@
 #pragma once
 
-#include "glad/glad.h"
-#include <__tuple>
 #include <algorithm>
-#include <array>
-#include <cstddef>
-#include <initializer_list>
-#include <tuple>
-#include <type_traits>
 #include <utility>
-#include <vector>
 
 namespace thuw {
     template<class VecClass>
