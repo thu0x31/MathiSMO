@@ -4,59 +4,73 @@
 #include <utility>
 
 namespace MathiSMO {
-    template<class VecClass>
-    concept VecConcept = requires(VecClass vec) {
-        vec.x;
-        vec.y;
-    };
+    namespace Concepts {
+        template<class V>
+        concept Vec = requires(V vec) {
+            vec.x;
+            vec.y;
+        };
 
-    template<std::size_t Dimension>
+        template<typename Type>
+        concept Numeric = std::is_floating_point_v<Type> || std::is_integral_v<Type>;
+    }
+
+    template<typename Type, std::size_t Dimension>
     class Vec;
 
-    using Vec2 = Vec<2>;
-    using Vec3 = Vec<3>;
-    using Vec4 = Vec<4>;
+    using Vec2 = Vec<float, 2>;
+    using Vec3 = Vec<float, 3>;
+    using Vec4 = Vec<float, 4>;
 
-    template<typename Type>
-    concept Numeric = std::is_floating_point_v<Type> || std::is_integral_v<Type>;
+    using Vec2f = Vec<float, 2>;
+    using Vec3f = Vec<float, 3>;
+    using Vec4f = Vec<float, 4>;
 
-    template<Numeric ...Num>
-    Vec(Num&& ...nums) -> Vec<sizeof...(Num)>;
+    using Vec2d = Vec<double, 2>;
+    using Vec3d = Vec<double, 3>;
+    using Vec4d = Vec<double, 4>;
+
+    using Vec2i = Vec<int, 2>;
+    using Vec3i = Vec<int, 3>;
+    using Vec4i = Vec<int, 4>;
+
+    template<Concepts::Numeric ...Num>
+    Vec(Num&& ...nums) -> Vec<std::common_type_t<Num...>, sizeof...(Num)>;
 }
 
-template<std::size_t Dimension>
+template<typename Type, std::size_t Dimension>
 class MathiSMO::Vec {
     static_assert(Dimension < 5);
     static_assert(Dimension > 1);
 };
 
 // Vec2 ------------------------------------------------------------------------------------------
-template<>
-class MathiSMO::Vec<2> {
+template<typename Type>
+class MathiSMO::Vec<Type, 2> {
 public:
     constexpr static int Dimension = 2;
 
     union {
-        struct { float x, y; };
-        struct { float r, g; };
+        struct { Type x, y; };
+        struct { Type r, g; };
     };
 
-    [[nodiscard]] const float* data() const {
-        const float data[Dimension] {this->x, this->y};
+    [[nodiscard]] const Type* data() const {
+        const Type data[Dimension] {this->x, this->y};
         return std::move(data);
     }
 
-    template<VecConcept Vec>
+    template<Concepts::Vec Vec>
     [[nodiscard]] constexpr auto operator+(Vec&& vec) const {
-        return MathiSMO::Vec<Dimension>{
+        return MathiSMO::Vec<Type, Dimension>{
             .x = this->x + vec.x,
             .y = this->y + vec.y
         };
     }
 
-    template<Numeric Num>
+    template<Concepts::Numeric Num>
     [[nodiscard]] constexpr auto operator+(Num&& value) const {
-        return MathiSMO::Vec<Dimension>{
+        return MathiSMO::Vec<Type, Dimension>{
             .x = this->x + value,
             .y = this->y + value
         };
@@ -64,34 +78,33 @@ public:
 };
 
 // Vec3 ------------------------------------------------------------------------------------------
-template<>
-class MathiSMO::Vec<3> {
+template<typename Type>
+class MathiSMO::Vec<Type, 3> {
 public:
     constexpr static int Dimension = 3;
 
     union {
-        struct { float x, y, z; };
-        struct { float r, g, b; };
+        struct { Type x, y, z; };
+        struct { Type r, g, b; };
     };
 
-    [[nodiscard]] const float* data() const {
-        const float data[Dimension] {this->x, this->y, this->z};
+    [[nodiscard]] const Type* data() const {
+        const Type data[Dimension] {this->x, this->y, this->z};
         return std::move(data);
     }
 
-    template<VecConcept Vec>
+    template<Concepts::Vec Vec>
     [[nodiscard]] constexpr auto operator+(Vec&& vec) const {
-        
-        return MathiSMO::Vec<Dimension>{
+        return MathiSMO::Vec<Type, Dimension>{
             .x = this->x + vec.x,
             .y = this->y + vec.y,
             .z = this->z + vec.z
         };
     }
 
-    template<Numeric Num>
+    template<Concepts::Numeric Num>
     [[nodiscard]] constexpr auto operator+(Num&& value) const {
-        return MathiSMO::Vec<Dimension>{
+        return MathiSMO::Vec<Type, Dimension>{
             .x = this->x + value,
             .y = this->y + value, 
             .z = this->z + value
@@ -100,24 +113,24 @@ public:
 };
 
 // Vec4 ------------------------------------------------------------------------------------------
-template<>
-class MathiSMO::Vec<4> {
+template<typename Type>
+class MathiSMO::Vec<Type, 4> {
 public:
     constexpr static int Dimension = 4;
 
     union {
-        struct { float x, y, z, w; };
-        struct { float r, g, b, a; };
+        struct { Type x, y, z, w; };
+        struct { Type r, g, b, a; };
     };
 
-    [[nodiscard]] const float* data() const {
-        const float data[Dimension] {this->x, this->y, this->z, this->w};
+    [[nodiscard]] const Type* data() const {
+        const Type data[Dimension] {this->x, this->y, this->z, this->w};
         return std::move(data);
     }
 
-    template<VecConcept Vec>
+    template<Concepts::Vec Vec>
     [[nodiscard]] constexpr auto operator+(Vec&& vec) const {
-        return MathiSMO::Vec<Dimension>{
+        return MathiSMO::Vec<Type, Dimension>{
             .x = this->x + vec.x,
             .y = this->y + vec.y,
             .z = this->z + vec.z,
@@ -125,9 +138,9 @@ public:
         };
     }
 
-    template<Numeric Num>
+    template<Concepts::Numeric Num>
     [[nodiscard]] constexpr auto operator+(Num&& value) const {
-        return MathiSMO::Vec<Dimension>{
+        return MathiSMO::Vec<Type, Dimension>{
             .x = this->x + value,
             .y = this->y + value, 
             .z = this->z + value,

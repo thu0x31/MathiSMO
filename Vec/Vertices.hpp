@@ -17,30 +17,31 @@
 
 
 namespace MathiSMO {
-    template<class Vertices>
-    concept VerticesClass = requires {
-        Vertices::dimension;
-        Vertices::size;
-    };
+    namespace Concepts {
+        template<class Vert>
+        concept Vertices = requires {
+            Vert::dimension;
+            Vert::size;
+        };
+    }
 
-    template<size_t Size, size_t D>
+    template<typename Type, size_t Size, size_t D>
     class Vertices;
 
     // Vertices< Type{int, float, double}, ListSize{3, 3, 3, 3}>
-    template<Numeric ...Type, size_t ...ListSize>
+    template<Concepts::Numeric ...Type, size_t ...ListSize>
     Vertices(const Type (&...list)[ListSize]) 
-    -> Vertices<sizeof...(ListSize), (ListSize + ...) / sizeof...(ListSize)>;
+    -> Vertices<std::common_type_t<Type...>, sizeof...(ListSize), (ListSize + ...) / sizeof...(ListSize)>;
 }
 
-template<size_t Size, size_t D>
+template<typename Type, size_t Size, size_t D>
 class MathiSMO::Vertices {
 public:
-    using Type = float;
 
-    static constexpr std::size_t dimension = D;
+    static constexpr std::size_t Dimension = D;
     static constexpr std::size_t size = Size;
 
-    using VecArray = std::array<Type, dimension>;
+    using VecArray = std::array<Type, Dimension>;
     std::array<VecArray, size> vertices;
 
     // TODO: Vertices(Vex...)
@@ -52,7 +53,7 @@ public:
         return this->vertices.data();
     }
 
-    constexpr MathiSMO::Vec<dimension> operator[](const std::size_t index) const {
+    constexpr MathiSMO::Vec<Type, Dimension> operator[](const std::size_t index) const {
         return vertices[index];
     }
 };

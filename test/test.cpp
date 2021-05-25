@@ -1,3 +1,4 @@
+#include <type_traits>
 #define CATCH_CONFIG_MAIN
 
 #include <catch2/catch.hpp>
@@ -10,12 +11,15 @@ TEST_CASE("init", "[Vec]") {
     MathiSMO::Vec v3{1.f, 2.f, 3.f};
     MathiSMO::Vec v4{1.f, 2.f, 3.f, 4.f};
 
+    REQUIRE(std::is_same<MathiSMO::Vec2, decltype(v2)>::value);
     REQUIRE(v2.Dimension == 2);
     REQUIRE(v2.x == 1.f); REQUIRE(v2.y == 2.f);
     REQUIRE(v2.r == 1.f); REQUIRE(v2.g == 2.f);
+    REQUIRE(std::is_same<MathiSMO::Vec3, decltype(v3)>::value);
     REQUIRE(v3.Dimension == 3);
     REQUIRE(v3.x == 1.f); REQUIRE(v3.y == 2.f); REQUIRE(v3.z == 3.f);
     REQUIRE(v3.r == 1.f); REQUIRE(v3.g == 2.f); REQUIRE(v3.b == 3.f);
+    REQUIRE(std::is_same<MathiSMO::Vec4, decltype(v4)>::value);
     REQUIRE(v4.Dimension == 4);
     REQUIRE(v4.x == 1.f); REQUIRE(v4.y == 2.f); REQUIRE(v4.z == 3.f); REQUIRE(v4.w == 4.f);
     REQUIRE(v4.r == 1.f); REQUIRE(v4.g == 2.f); REQUIRE(v4.b == 3.f); REQUIRE(v4.a == 4.f);
@@ -56,11 +60,11 @@ TEST_CASE("copy", "[Vec]") {
     MathiSMO::Vec v3{1.f, 2.f, 3.f};
     MathiSMO::Vec v4{1.f, 2.f, 3.f, 4.f};
 
-    MathiSMO::Vec<2> v2_copy; 
+    MathiSMO::Vec<float,2> v2_copy; 
     v2_copy = v2;
-    MathiSMO::Vec<3> v3_copy; 
+    MathiSMO::Vec<float,3> v3_copy; 
     v3_copy = v3;
-    MathiSMO::Vec<4> v4_copy; 
+    MathiSMO::Vec<float,4> v4_copy; 
     v4_copy = v4;
 
     REQUIRE(v2_copy.Dimension == 2);
