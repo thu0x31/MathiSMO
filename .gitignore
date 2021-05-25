@@ -4,3 +4,5 @@ test/.cache
 .cache
 
 .vscode/launch.json
+
+compile_commands.json
