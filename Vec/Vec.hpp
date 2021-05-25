@@ -129,17 +129,3 @@ public:
         };
     }
 };
-
-
-// // TODO: prototype test
-constexpr thuw::Vec v1{1.f, 2.f, 3.f, 4};
-constexpr auto v2 = thuw::Vec<3>{1, 2, 3};
-constexpr auto v5 = thuw::Vec4{1.f, 2.f, 3.f, 3.f};
-constexpr auto v3 = thuw::Vec{1.f, 2.f};
-constexpr auto v4 = thuw::Vec{1.f, 2.f, 3.f};
-constexpr auto vvv = thuw::Vec{1.f, 2.f, 3.f};
-auto v23 = thuw::Vec{1.f, 2.f};
-auto v34 = thuw::Vec{1.f, 2.f, 3.f};
-auto test = v23 + v34;
-const auto test2 = v23 + v34;
-const auto aaa = v1.data();
