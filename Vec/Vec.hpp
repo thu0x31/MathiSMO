@@ -3,7 +3,7 @@
 #include <algorithm>
 #include <utility>
 
-namespace thuw {
+namespace MathiSMO {
     template<class VecClass>
     concept VecConcept = requires(VecClass vec) {
         vec.x;
@@ -18,25 +18,28 @@ namespace thuw {
     using Vec4 = Vec<4>;
 
     template<typename Type>
-    concept Number = std::is_floating_point_v<Type> || std::is_integral_v<Type>;
+    concept Numeric = std::is_floating_point_v<Type> || std::is_integral_v<Type>;
 
-    template<Number ...Num>
+    template<Numeric ...Num>
     Vec(Num&& ...nums) -> Vec<sizeof...(Num)>;
 }
 
 template<std::size_t Dimension>
-class thuw::Vec {
+class MathiSMO::Vec {
     static_assert(Dimension < 5);
     static_assert(Dimension > 1);
 };
 
+// Vec2 ------------------------------------------------------------------------------------------
 template<>
-class thuw::Vec<2> {
+class MathiSMO::Vec<2> {
 public:
     constexpr static int Dimension = 2;
 
-    float x = 0;
-    float y = 0;
+    union {
+        struct { float x, y; };
+        struct { float r, g; };
+    };
 
     [[nodiscard]] const float* data() const {
         const float data[Dimension] {this->x, this->y};
@@ -45,29 +48,31 @@ public:
 
     template<VecConcept Vec>
     [[nodiscard]] constexpr auto operator+(Vec&& vec) const {
-        return thuw::Vec<Dimension>{
+        return MathiSMO::Vec<Dimension>{
             .x = this->x + vec.x,
             .y = this->y + vec.y
         };
     }
 
-    template<Number Num>
+    template<Numeric Num>
     [[nodiscard]] constexpr auto operator+(Num&& value) const {
-        return thuw::Vec<Dimension>{
+        return MathiSMO::Vec<Dimension>{
             .x = this->x + value,
             .y = this->y + value
         };
     }
 };
 
+// Vec3 ------------------------------------------------------------------------------------------
 template<>
-class thuw::Vec<3> {
+class MathiSMO::Vec<3> {
 public:
     constexpr static int Dimension = 3;
 
-    float x = 0;
-    float y = 0;
-    float z = 0;
+    union {
+        struct { float x, y, z; };
+        struct { float r, g, b; };
+    };
 
     [[nodiscard]] const float* data() const {
         const float data[Dimension] {this->x, this->y, this->z};
@@ -77,16 +82,16 @@ public:
     template<VecConcept Vec>
     [[nodiscard]] constexpr auto operator+(Vec&& vec) const {
         
-        return thuw::Vec<Dimension>{
+        return MathiSMO::Vec<Dimension>{
             .x = this->x + vec.x,
             .y = this->y + vec.y,
             .z = this->z + vec.z
         };
     }
 
-    template<Number Num>
+    template<Numeric Num>
     [[nodiscard]] constexpr auto operator+(Num&& value) const {
-        return thuw::Vec<Dimension>{
+        return MathiSMO::Vec<Dimension>{
             .x = this->x + value,
             .y = this->y + value, 
             .z = this->z + value
@@ -94,15 +99,16 @@ public:
     }
 };
 
+// Vec4 ------------------------------------------------------------------------------------------
 template<>
-class thuw::Vec<4> {
+class MathiSMO::Vec<4> {
 public:
     constexpr static int Dimension = 4;
 
-    float x = 0;
-    float y = 0;
-    float z = 0;
-    float w = 1;
+    union {
+        struct { float x, y, z, w; };
+        struct { float r, g, b, a; };
+    };
 
     [[nodiscard]] const float* data() const {
         const float data[Dimension] {this->x, this->y, this->z, this->w};
@@ -111,7 +117,7 @@ public:
 
     template<VecConcept Vec>
     [[nodiscard]] constexpr auto operator+(Vec&& vec) const {
-        return thuw::Vec<Dimension>{
+        return MathiSMO::Vec<Dimension>{
             .x = this->x + vec.x,
             .y = this->y + vec.y,
             .z = this->z + vec.z,
@@ -119,9 +125,9 @@ public:
         };
     }
 
-    template<Number Num>
+    template<Numeric Num>
     [[nodiscard]] constexpr auto operator+(Num&& value) const {
-        return thuw::Vec<Dimension>{
+        return MathiSMO::Vec<Dimension>{
             .x = this->x + value,
             .y = this->y + value, 
             .z = this->z + value,

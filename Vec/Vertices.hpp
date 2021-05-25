@@ -1,7 +1,6 @@
 #pragma once
 
-#include "glad/glad.h"
-#include "thuw/Vec.hpp"
+#include "Vec.hpp"
 #include <algorithm>
 #include <array>
 #include <cstddef>
@@ -17,7 +16,7 @@
 #include <string>
 
 
-namespace thuw {
+namespace MathiSMO {
     template<class Vertices>
     concept VerticesClass = requires {
         Vertices::dimension;
@@ -28,13 +27,13 @@ namespace thuw {
     class Vertices;
 
     // Vertices< Type{int, float, double}, ListSize{3, 3, 3, 3}>
-    template<Number ...Type, size_t ...ListSize>
+    template<Numeric ...Type, size_t ...ListSize>
     Vertices(const Type (&...list)[ListSize]) 
     -> Vertices<sizeof...(ListSize), (ListSize + ...) / sizeof...(ListSize)>;
 }
 
 template<size_t Size, size_t D>
-class thuw::Vertices {
+class MathiSMO::Vertices {
 public:
     using Type = float;
 
@@ -53,7 +52,7 @@ public:
         return this->vertices.data();
     }
 
-    constexpr thuw::Vec<dimension> operator[](const std::size_t index) const {
+    constexpr MathiSMO::Vec<dimension> operator[](const std::size_t index) const {
         return vertices[index];
     }
 };
